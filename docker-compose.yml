@@ -12,6 +12,9 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_HOST=postgres
       - PORT=8080
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   frontend:
     build: ./web
@@ -24,7 +27,9 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 80:80
+     - 80:80
+    depends_on:
+      - frontend
 
   postgres:
     image: 'postgres:14.5-alpine'
@@ -32,6 +37,12 @@ services:
       - POSTGRES_USER=student_user
       - POSTGRES_PASSWORD=student_password
       - POSTGRES_DB=labo
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "labo", "-U", "student_password" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
       - postgres:/var/lib/postgresql/data/
 
