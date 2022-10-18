@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  api:
+    build: ./api
+    ports:
+      - 8080:8080
+    environment:
+      - POSTGRES_USER=student_user
+      - POSTGRES_PASSWORD=student_password
+      - POSTGRES_DATABASE=labo
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=postgres
+      - PORT=8080
+
+  frontend:
+    build: ./web
+    expose:
+      - 5000
+    environment:
+      - FLASK_SECRET_KEY=glfer4cscrgaQfmnP
+      - JWT_SECRET_KEY=SG9wZWxpamsgZ2VicnVpa3QgZWVuIHN0dWRlbnQgZGl0IG9vaXQgbnV0dGlnLg==
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+
+  postgres:
+    image: 'postgres:14.5-alpine'
+    environment:
+      - POSTGRES_USER=student_user
+      - POSTGRES_PASSWORD=student_password
+      - POSTGRES_DB=labo
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+
+volumes:
+  postgres:
