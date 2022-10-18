@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
-    POSTGRES_DATABASE: str
+    POSTGRES_DB: str
     POSTGRES_PORT: str
     API_VERSION_STR: str = "/api/v1"
     SECRET_KEY: str = "SG9wZWxpamsgZ2VicnVpa3QgZWVuIHN0dWRlbnQgZGl0IG9vaXQgbnV0dGlnLg=="
@@ -27,7 +27,7 @@ class Settings(BaseSettings):
             port=values.get("POSTGRES_PORT"),
             password=values.get("POSTGRES_PASSWORD"),
             host=values.get("POSTGRES_HOST"),
-            path=f"/{values.get('POSTGRES_DATABASE') or ''}",
+            path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
     class Config:

@@ -35,7 +35,7 @@ def get_url():
     user = settings.POSTGRES_USER
     password = settings.POSTGRES_PASSWORD
     server = settings.POSTGRES_HOST
-    db = settings.POSTGRES_DATABASE
+    db = settings.POSTGRES_DB
     port = settings.POSTGRES_PORT
     return f"postgresql://{user}:{password}@{server}:{port}/{db}"
 
