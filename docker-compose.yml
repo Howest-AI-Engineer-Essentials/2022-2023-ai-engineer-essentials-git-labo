@@ -77,6 +77,8 @@ services:
       - "traefik.http.routers.traefik.rule=Host(`localhost`)"
       - traefik.http.services.traefik.loadbalancer.server.port=8080
       - "traefik.docker.network=2022-2023-ai-engineer-essentials-git-labo_web"
+      - "traefik.http.routers.traefik.middlewares=admin"
+      - "traefik.http.middlewares.admin.basicauth.users=esli:$$apr1$$ofTjuCSC$$fueI91nO7q8SlkQ9iWOLH1"
     networks:
       - web
 
