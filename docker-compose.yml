@@ -67,6 +67,8 @@ services:
     image: traefik:v2.9
     # Enables the web UI and tells Traefik to listen to docker
     command: --api.insecure=true --providers.docker
+    env_file:
+      - .traefik.env
     ports:
       # The HTTP port
       - "80:80"
@@ -78,7 +80,7 @@ services:
       - traefik.http.services.traefik.loadbalancer.server.port=8080
       - "traefik.docker.network=2022-2023-ai-engineer-essentials-git-labo_web"
       - "traefik.http.routers.traefik.middlewares=admin"
-      - "traefik.http.middlewares.admin.basicauth.users=esli:$$apr1$$ofTjuCSC$$fueI91nO7q8SlkQ9iWOLH1"
+      - "traefik.http.middlewares.admin.basicauth.users=${BASIC_AUTH}"
     networks:
       - web
 
