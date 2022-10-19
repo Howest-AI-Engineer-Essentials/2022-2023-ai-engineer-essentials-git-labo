@@ -3,13 +3,20 @@ version: '3.9'
 services:
   api:
     build: ./api
-    ports:
-      - 8080:8080
+    expose:
+      - 8080
     env_file:
       - .env
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - web
+      - data
+    labels:
+      - "traefik.http.routers.api.rule=Host(`api.local`)"
+      - traefik.http.services.api.loadbalancer.server.port=8080
+      - "traefik.docker.network=2022-2023-ai-engineer-essentials-git-labo_web"
 
   frontend:
     build: ./web
@@ -19,15 +26,24 @@ services:
       - .frontend.env
     volumes:
       - ./web/webapp/static/:/app/webapp/static/
+    networks:
+      - web
+    labels:
+      - traefik.enable=false
 
   nginx:
     build: ./nginx
-    ports:
-     - 80:80
+    expose:
+      - 80
     depends_on:
       - frontend
     volumes:
       - ./web/webapp/static/:/app/static/
+    networks:
+      - web
+    labels:
+      - "traefik.http.routers.frontend.rule=Host(`frontend.local`)"
+      - "traefik.docker.network=2022-2023-ai-engineer-essentials-git-labo_web"
 
   postgres:
     image: 'postgres:14.5-alpine'
@@ -41,6 +57,36 @@ services:
       start_period: 10s
     volumes:
       - postgres:/var/lib/postgresql/data/
+    networks:
+      - data
+    labels:
+      - traefik.enable=false
+
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.9
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    env_file:
+      - .traefik.env
+    ports:
+      # The HTTP port
+      - "80:80"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.http.routers.traefik.rule=Host(`localhost`)"
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+      - "traefik.docker.network=2022-2023-ai-engineer-essentials-git-labo_web"
+      - "traefik.http.routers.traefik.middlewares=admin"
+      - "traefik.http.middlewares.admin.basicauth.users=${BASIC_AUTH}"
+    networks:
+      - web
 
 volumes:
   postgres:
+
+networks:
+  web:
+  data:
