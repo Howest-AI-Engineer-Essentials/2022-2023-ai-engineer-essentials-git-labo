@@ -9,7 +9,6 @@ COPY webapp/requirements.txt ./
 RUN pip wheel --wheel-dir=/root/wheels -r requirements.txt
 
 
-
 FROM python:3.10.2-alpine3.15 as production-image
 
 WORKDIR '/app'
