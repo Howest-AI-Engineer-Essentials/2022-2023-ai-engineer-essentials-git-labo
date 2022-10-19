@@ -1,4 +1,4 @@
-FROM python:3.10.2-alpine3.15 as build-image
+FROM python:3.10.8-alpine3.16 as build-image
 
 WORKDIR '/app'
 
@@ -10,7 +10,7 @@ RUN pip wheel --wheel-dir=/root/wheels -r requirements.txt
 
 
 
-FROM python:3.10.2-alpine3.15 as production-image
+FROM python:3.10.8-alpine3.16 as production-image
 
 WORKDIR '/app'
 
